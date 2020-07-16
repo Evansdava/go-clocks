@@ -24,14 +24,14 @@ func main() {
 	fmt.Println("C: Create a clock")
 	fmt.Println("S: Select a clock")
 	fmt.Println("D: Delete a clock")
-	fmt.Println("Q: Quit the program")
+	fmt.Print("Q: Quit the program\n\n")
 
 	for scanner.Scan() {
 		switch strings.ToLower(scanner.Text()) {
 		case "c":
-			createClock()
+			useClock(createClock())
 		case "s":
-			selectClock()
+			useClock(selectClock())
 		case "d":
 			deleteClock()
 		case "q":
@@ -51,7 +51,6 @@ func createClock() Clock {
 
 	fmt.Print("Enter name and size (separated by a space): ")
 	create, err := reader.ReadString('\n')
-	fmt.Println(create)
 	if err != nil {
 		panic(err)
 	}
@@ -63,14 +62,15 @@ func createClock() Clock {
 	var size string
 	if createSlice[1] != "" {
 		size = createSlice[1]
-		fmt.Println(size)
 	}
-	sizeInt, _ := strconv.Atoi(size)
-	fmt.Println(sizeInt)
+	sizeInt, _ := strconv.Atoi(strings.Trim(size, "\n"))
 
 	clock := Clock{name, sizeInt, 0}
 	fmt.Println(clock)
-	db.Write("clock", name, clock)
+	err = db.Write("clock", name, Clock{name, sizeInt, 0})
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println("Clock created")
 
 	return clock
@@ -87,6 +87,7 @@ func selectClock() Clock {
 
 	var clock Clock
 	db.Read("clock", name, &clock)
+	fmt.Println(clock)
 	return clock
 }
 
@@ -100,11 +101,15 @@ func useClock(clock Clock) {
 	for scanner.Scan() {
 		switch strings.ToLower(scanner.Text()) {
 		case "t":
-			clock.filled += 1
+			if clock.filled < clock.size {
+				clock.filled += 1
+			}
 		case "r":
-			clock.filled -= 1
+			if clock.filled > 0 {
+				clock.filled -= 1
+			}
 		case "q":
-			break
+			return
 		}
 
 		fmt.Println(clock)
@@ -132,7 +137,7 @@ func (c Clock) String() string {
 		} else {
 			str += "-"
 		}
-		fmt.Println(str)
+		// fmt.Println(str)
 	}
 	str += "]"
 	return str
