@@ -94,8 +94,8 @@ func selectClock() Clock {
 func useClock(clock Clock) {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Press T to tick the clock, and R to untick it")
-	fmt.Println("Press Q to return to main menu")
+	fmt.Println("\nPress T to tick the clock, and R to untick it")
+	fmt.Print("Press Q to return to main menu\n\n")
 	fmt.Println(clock)
 
 	for scanner.Scan() {
@@ -130,7 +130,7 @@ func deleteClock() {
 }
 
 func (c Clock) String() string {
-	str := "]"
+	str := "["
 	for i := 0; i < c.size; i++ {
 		if i < c.filled {
 			str += string(9609) // Left 7/8 block
