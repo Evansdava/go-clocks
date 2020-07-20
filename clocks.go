@@ -10,6 +10,7 @@ import (
 	scribble "github.com/nanobox-io/golang-scribble"
 )
 
+// Main struct for working with clocks
 type Clock struct {
 	name   string
 	size   int
@@ -29,11 +30,11 @@ func main() {
 	for scanner.Scan() {
 		switch strings.ToLower(scanner.Text()) {
 		case "c":
-			useClock(createClock())
+			UseClock(CreateClock())
 		case "s":
-			useClock(selectClock())
+			UseClock(SelectClock())
 		case "d":
-			deleteClock()
+			DeleteClock()
 		case "q":
 			return
 		}
@@ -46,7 +47,8 @@ func main() {
 	}
 }
 
-func createClock() Clock {
+// Create a new clock
+func CreateClock() Clock {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter name and size (separated by a space): ")
@@ -76,7 +78,8 @@ func createClock() Clock {
 	return clock
 }
 
-func selectClock() Clock {
+// Choose a clock to start using
+func SelectClock() Clock {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter clock name: ")
@@ -91,7 +94,8 @@ func selectClock() Clock {
 	return clock
 }
 
-func useClock(clock Clock) {
+// Bring up the interface for ticking or unticking a clock
+func UseClock(clock Clock) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Println("\nPress T to tick the clock, and R to untick it")
@@ -116,7 +120,8 @@ func useClock(clock Clock) {
 	}
 }
 
-func deleteClock() {
+// Delete a clock from the database
+func DeleteClock() {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter clock name: ")
@@ -129,6 +134,7 @@ func deleteClock() {
 	fmt.Printf("Successfully deleted clock %s", name)
 }
 
+// Stringer to print clocks out
 func (c Clock) String() string {
 	str := "["
 	for i := 0; i < c.size; i++ {
